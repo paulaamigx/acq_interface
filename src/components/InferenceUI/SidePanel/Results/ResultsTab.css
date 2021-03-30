@@ -1,0 +1,146 @@
+:root {
+  --main: #104161;
+  --second: #2495e0;
+}
+
+#galleryPrev, #galleryNext{
+  position: absolute;
+  width: 2vw;
+  height: 4vw;
+  top: 3.3vw; 
+}
+
+#galleryPrev{
+  left: 2vw;
+  width: 0; 
+  height: 0; 
+  border-top: 2vw solid transparent;
+  border-bottom: 2vw solid transparent; 
+  border-right: 2vw solid var(--second); 
+}
+
+#galleryNext{
+  right: 2vw;
+  width: 0; 
+  height: 0; 
+  border-top: 2vw solid transparent;
+  border-bottom: 2vw solid transparent;
+  border-left: 2vw solid #2495e0;
+}
+
+#img1, #img2, #img3{
+  position: absolute;
+  width: 10vw;
+  top: 1.25vw;
+  object-fit: cover;
+}
+#img1{
+  left: 5vw;
+}
+#img2{
+  left: 16vw;
+}
+#img3{
+  left: 27vw;
+  margin-right: 0.4vw;
+}
+
+#deletePhoto, #keepPhoto{
+  position: absolute;
+  width: 1.8vw;
+  height: 1.8vw;
+  top: 27.8vw;
+}
+
+#deletePhoto{
+  left: 20.1vw;
+}
+
+#keepPhoto{
+  left: 17vw;
+}
+#logoCtrlPhoto{
+  position: relative;
+  height: 100%;
+}
+#displayedImg, #divNoPhoto{
+  position: absolute;
+  margin: auto;
+  width: 23vw;
+  padding: 1vw;
+  display: block;
+  top: 10vw; 
+  left: 9.5vw;
+  font-style: italic;
+}
+#divNoPhoto{
+  border: 1px solid black;
+  height: 17.25vw;
+  text-align: center;
+}
+#divNoPhotoInside{
+  position: relative;
+  top: 6.2vw;
+  font-size: 1.2vw;
+}
+.download{
+  position:absolute;
+  top: 1.6vw;
+  width:12vw;
+  height: 3vw;
+  cursor: pointer;
+  background-color: #2495e0;
+}
+#downloadAll{
+  left: 2vw;
+}
+#downloadPhotos{
+  left: 15vw;
+}
+#downloadVideo{
+  left: 28vw;
+}
+.downloadLogo{
+  position: relative;
+  height: 2vw;
+  top: 0.4vw;
+  left: 0.8vw;
+}
+.downloadTag{
+  position: absolute;
+  top: 0.5vw;
+  left: 3.5vw;
+  font-size: 1vw;
+  line-height: 1vw;
+  height: 2vw;
+  width: 7vw;
+  overflow: hidden;
+  text-align: center;
+}
+.tableDefault{
+  z-index: 5;
+}
+
+#downloadBG{
+  z-index: 0;
+  position: absolute;
+  background-color: black;
+  height: 7vw;
+  width: 42vw;
+  top: 30.9vw;
+  left: -0.1vw;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 6px -3px 3px rgba(0,0,0,0.1);
+  background-color: rgba(26,237,208,0.25);
+
+}
+#modalBtn{
+  display: none;
+}
+#errorBox{
+  width: 20vw;
+  height: 50vw;
+}

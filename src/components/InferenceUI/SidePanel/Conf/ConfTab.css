@@ -1,0 +1,39 @@
+#RefreshBtn{
+  right: 0px;
+}
+
+#videoSelectConf{
+  height: 2.5vw;
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+#selectSrcBtn:hover{
+}
+#selectSrcBtn{
+  height: 2.5vw;
+  width: 4vw;
+  margin-left: 0%;
+  border: 0.1vw solid grey; 
+  border-radius: 0.5vw;
+  text-align: center;
+  padding: 0.3vw;
+  
+}
+
+#mirrorVBtn, #mirrorRstBtn, #mirrorHBtn{
+  position: relative;
+  background-color: white;
+  border-radius: 0.4vw;
+  width: 3vw;
+  height: 3vw;
+
+}
+ #countdownFromInput{
+  width: 5vw;
+  margin-left: 5%;
+}
+.c_division{
+  background: linear-gradient(to bottom, rgba(1,255,0,0) 80%, rgba(0,0,0,0.3) 20%);
+}

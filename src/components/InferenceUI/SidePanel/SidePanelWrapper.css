@@ -1,0 +1,152 @@
+:root {
+  --main: #104161;
+  --second: #2495e0;
+}
+#sidePanel_Wrapper{
+    position: absolute;
+		left: 55vw;
+    width: 42vw;
+		height: 41vw;
+    border: 0.1vw outset black;
+    border-bottom-left-radius: 0.5vw;
+    border-bottom-right-radius: 0.5vw;
+    border-top-left-radius: 0.6vw;
+    border-top-right-radius: 0.6vw;
+}
+.tableDefault{
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.fullSpace{
+  height: 100%;
+  width: 100%;
+}
+.button:active {
+  transform: translateY(0.2vw);
+}
+.button{
+  cursor: pointer;
+}
+.invertColor {
+   -webkit-filter: invert(1);
+   filter: invert(1);
+   }
+#tabs{
+  position: absolute;
+  left: -0.1vw;
+  width: 42vw;
+  height: 3vw;
+  background-color: var(--main);
+  border-top-left-radius: 0.5vw;
+  border-top-right-radius: 0.5vw;
+}
+.tab{
+  position: absolute;
+  left: 0vw;
+  height: 3vw;
+  border: 0.1vw solid black;
+  padding: auto;
+  text-align: center;
+  color: grey;
+  font-size: 1.1vw;
+  cursor: pointer;
+  border-top-right-radius: 0.6vw;
+  border-top-left-radius: 0.6vw;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 3vw;
+
+}
+#confTab{
+  width: 2.5vw;
+}
+#galleryTab{
+  left: 2.45vw;
+  width: 16vw;
+}
+#resultsTab{
+  left: 18.4vw;
+  width: 11.65vw;
+}
+#reportTab{
+  left: 30vw;
+  width: 12vw;
+}
+.tabBody{
+  position: absolute;
+  top: 3vw;
+  height: 38vw;
+  width: 42vw;
+  padding: 3vw;
+  font-size: 1.1vw;
+}
+#hideSidePanel, #showSidePanel{
+  position: absolute;
+  top: 19vw;
+  left: 0.5vw;
+  width: 3vw;
+}
+#showSidePanel{
+  left: 96vw;
+  height: 10vw;
+}
+#iconHidePanel, #iconShowPanel{
+  height: 1.5vw;
+}
+
+.darkBackground{
+  position: fixed;
+  background-color: rgba(0,0,0,0.8);
+  width: 100vw;
+  height: 100vh;
+  z-Index: 5;
+  top: 0vw;
+  right: 0vw;
+}
+.modalBasic{
+  position: fixed;
+  background-color: rgba(255,255,255,1);
+  box-shadow: 1vw 1vw 1vw 1vw rgba(0,0,0,0.15); 
+  border-radius: 0.5vw;
+}
+#d_modal{
+  width: 50vw;
+  height: 40vw;
+  left: 25vw;
+  top: 7vw;
+}
+#d_modalImg{
+  position: relative;
+  width: 35vw;
+  left: 7.5vw;
+  top: 1vw;
+  
+}
+#d_modalImgTag{
+  position: relative;
+  font-size: 1.2vw;
+  text-align: center;
+  top: 3vw;
+}
+.closeModal{
+  position: relative;
+  top: 1vw;
+  left: 47vw;
+  font-size: 2vw;
+  width: 2vw;
+  color: black;
+  cursor: pointer;
+}
+.arrowModal{
+  position: relative;
+  top:12vw;
+  font-size: 2.5vw;
+  width: 1vw;
+  height: 1vw;
+}
+#rightArrowModal{
+  left: 46vw;
+}
+#leftArrowModal{
+  left: 2vw;
+}

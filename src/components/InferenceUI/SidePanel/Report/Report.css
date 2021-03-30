@@ -1,0 +1,117 @@
+#ReportDiv{
+  height: 0%;
+  overflow:hidden;
+  font-size: 12px;
+  position: absolute;
+  top: 40vw;
+}
+
+#ReportPage{
+  width: 157mm;
+  height: 223mm;
+  font-size: 3mm;
+}
+
+
+#r_logoDiv{
+  position: relative;
+  top: 10mm;
+  left: 5mm;
+  height: 30mm;
+  width: 147mm;
+  text-align: center
+}
+#r_logoImg{
+  max-width: 100%;
+  max-height: 100%;
+}
+#r_table{
+  position: relative;
+  top: 18mm;
+  left: 10mm;
+  border-collapse: collapse;
+  padding: 5mm;
+  border-spacing: 5mm;
+  text-align: left;
+}
+
+td { 
+  padding: 1mm; 
+}
+#r_title{
+  position: relative;
+  top: 23mm;
+  text-align: center;
+  font-size: 4mm;;
+  width: 100%;
+}
+
+#r_results{
+  position: relative;
+  top: 25mm;
+  left: 10mm;
+}
+
+.r_img{
+  position: relative;
+  width: 44mm;
+  margin-right: 2.5mm;
+  margin-bottom: 2.5mm;
+}
+#r_obsPage1{
+  position: relative;
+  top: 30mm;
+  left: 10mm;
+}
+#r_obsBox{
+  border: 1px solid gray;
+  height: 15mm;
+  width: 137mm;
+  padding: 1mm;
+  font-size: 11px;
+
+}
+#r_diagnosisPage1{
+  position: relative;
+  top: 35mm;
+  left: 10mm;
+}
+#r_obsPage2{
+  position: absolute;
+  top: 240mm;
+  left: 10mm;
+}
+#r_diagnosisPage2{
+  position: absolute;
+  top: 270mm;
+  left: 10mm;
+}
+#r_diagnosisBox{
+  border: 1px solid gray;
+  height: 15mm;
+  width: 137mm;
+  padding: 1mm;
+  font-size: 11px;
+
+}
+.r_info{
+  position: absolute;
+  width: 160mm;
+  height: 15mm;
+  background-color: #104161;
+  text-align: center
+  }
+#r_infoPage1{
+  top: 200mm;;
+}
+#r_infoPage2{
+  top: 423mm;;
+}
+ #r_infoImg{
+  max-width: 100%;
+  max-height: 100%;
+
+ }
+.r_subSection{
+  margin-bottom: 5px;
+}

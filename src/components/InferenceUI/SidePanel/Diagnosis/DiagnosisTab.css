@@ -1,0 +1,176 @@
+#diagnosisReady{
+  z-Index: 2;
+}
+#diagnosisLeft{
+  position: absolute;
+  width: 25vw;
+  height: 38vw;
+  top: -0.05vw;
+  left: -0.1vw;
+  padding-right: 0.1vw;
+  border-bottom-right-radius: 1vw;
+  border-top-right-radius: 1vw;
+  box-shadow: 0.6vw 0px 0.3vw rgba(0,0,0,0.1);
+  background-color: rgba(26,237,208,0.25);
+}
+
+#btnMakeReport:hover{
+  background-color: #0189a0;
+}
+#btnMakeReport{
+  position: absolute;
+  top: 34.5vw;
+  width: 12vw;
+  left: 27vw;
+  height: 2vw;
+  padding-top: 0.2vw;
+  float: none;
+  color: white;
+  background-color: #104161;
+  border-radius: 0.5vw;
+  text-align: center;
+  font-size:90%;
+  cursor: pointer;
+}
+#btnMakeReport:active {
+  background-color: #104161;
+  transform: translateY(0.2vw);
+}
+
+#pdf{
+  position: absolute;
+  left: 0.1vw;
+  top: 0vw;
+  width: 41.75vw;
+  height: 37.9vw;
+}
+
+{/*********** IMAGES *******************************/
+}
+.diagnosisImg{
+  position: absolute;
+  left: 2.5vw;
+  width: 9vw;
+  box-shadow: 0.6vw 0.5vw 0.3vw rgba(0,0,0,0.6);
+  cursor: pointer;
+}
+#diagnosisImg1{
+  top: 3.8vw;
+  z-index: 3;
+}
+#diagnosisImg2{
+  top: 11.6vw;
+}
+#diagnosisImg3{
+  top: 19.6vw;
+}
+#diagnosisImg4{
+  top: 27.6vw;
+}
+
+.diagnosisImgTag{
+  position: absolute;
+  left: 13vw;
+  font-size: 1vw;
+  width: 8vw;
+  height: 6.8vw;
+  line-height: 6.8vw;
+}
+.d_ImgTagSpan{
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  width: 8vw;
+}
+#diagnosisImgTag1{
+  top: 3.8vw;
+}
+#diagnosisImgTag2{
+  top: 11.6vw;
+}
+#diagnosisImgTag3{
+  top: 19.6vw;
+}
+#diagnosisImgTag4{
+  top: 27.6vw;
+}
+
+.d_ImgTagUnderline{
+  position: relative;
+  width: 11vw;
+  height: 1.5vw;
+  left: -1.5vw;
+  vertical-align: baseline;
+  background: linear-gradient(to bottom, rgba(1,255,0,0) 85%, black 15%);
+}
+
+{/*********** TEXT *******************************/
+}
+.diagnosisBoxTag{
+  font-weight: bold;
+  font-size: 1vw;
+  position: absolute;
+  left: 27vw;
+  top: 20vw;
+}
+#diagnosisBoxTag1{
+  top: 3vw;
+}
+#diagnosisBoxTag2{
+  top: 13vw;
+}
+#diagnosisBoxTag3{
+  top: 23vw;
+}
+.diagnosisBox{
+  position: absolute; 
+  width: 12vw;
+  height: 6.5vw;
+  border: 0.1vw solid gray;
+  left: 27vw;
+  padding: 1vh;
+  font-size: 1vw;
+}
+#diagnosisBox1{
+  top: 5vw;
+  overflow: auto;
+}
+#diagnosisBox2{
+  top: 15vw;
+}
+#diagnosisBox3{
+  top: 25vw;
+}
+
+ul.listNoneItem{
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  font-size: 1vw;
+}
+
+.d_scroll{
+  position: absolute;
+  width: 5vw;
+  height: 1vw;
+  z-Index: 10;
+  left: 10vw;
+  cursor: pointer;
+}
+#d_scrollImgsDown{
+  top: 35.5vw;
+  width: 0; 
+  height: 0; 
+  border-left: 2vw solid transparent;
+  border-right: 2vw solid transparent;
+  border-top: 1vw solid #0189a0;
+
+}
+#d_scrollImgsUp{
+  top: 1.8vw;
+  width: 0; 
+  height: 0; 
+  border-left: 2vw solid transparent;
+  border-right: 2vw solid transparent;
+  border-bottom: 1vw solid #0189a0;
+ }
