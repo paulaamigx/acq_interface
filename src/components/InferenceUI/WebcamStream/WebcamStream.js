@@ -1,23 +1,15 @@
 import './WebcamStream.css'
 import React from 'react';
-//import {Alert} from 'reactstrap';
 
 import "@fortawesome/fontawesome-free/css/all.css"
 
-import JSZipUtils from 'jszip-utils';
-import JSZip from 'jszip';
 //import FileSaver from 'file-saver';
 import {handleDataAvailable, ctrlBtnFunction, countdown, 
-        downloadScreenshots, downloadVideo, downloadAll, captureScreenshot, mirror,
+        captureScreenshot, mirror,
         fullScreen, organizeScreen} from './functions.js';
         
-const framesPerZip = 20;
-//tambien se debe configurar en Inference.js
-const packetsSentLimit = 10;
 
 
-// Agregar variable para almacenar la hora en que se apretó el start.
-// Administrar el fullscreen desde acá ahora.
 class WebcamStream extends React.Component {
   constructor(props) {
     super();
@@ -39,19 +31,8 @@ class WebcamStream extends React.Component {
     this.canvasHeight = 0;
     this.canvasWidth = 0;
     
-    //Dummy mientras usamos setTimeout para pasar de gecon a exam
-    this.timeout = null;
-    this.timeout2 = null;
     this.videoSrc = null;
     
-    this.changeFullScreenFrom = false;
-
-    this.framesArray = [];
-		this.socketCnt = 0;
-    this.zip = null;
-    this.packetsSent = 0;
-    
-    this.frameNumber = 0;
 
   }
 
@@ -109,35 +90,6 @@ class WebcamStream extends React.Component {
           if(this.props.currentState.stateName.localeCompare("Countdown")===0){
             countdown(canvasPreviewElement,this,countdownCurrent, countdownNext);
           }
-
-          //Send each frame to server
-          else if(this.props.currentState.stateName.localeCompare("Examination") === 0){
-            let frame  = canvasPreviewElement.toDataURL("image/jpeg",0.5);
-            if (this.socketCnt < framesPerZip && this.socketCnt >0){
-                let name = 'f'+this.frameNumber+'.jpeg';
-                this.zip.file(name, urlToPromise(frame),{binary:true});
-            }
-            else if(this.socketCnt === framesPerZip){
-					  	let el = this;
-              console.log('aca');
-				      this.zip.generateAsync({type: "blob"}).then(
-                function(content) {
-                  console.log('zipfile');
-                  var zipFile = new File([content], "test.zip");
-                  sendto(zipFile,el);
-                });
-              this.packetsSent++;
-              if(this.packetsSent < packetsSentLimit)
-                this.socketCnt = 0;
-            }
-            if(this.socketCnt === 0){
-              this.zip = new JSZip();
-              let name = 'f'+this.frameNumber+'.jpeg';
-              this.zip.file(name, urlToPromise(frame),{binary:true});
-            }
-            this.socketCnt++;
-            this.frameNumber++;
-          }
           requestAnimationFrame(this.tick);
         }
       }
@@ -154,21 +106,10 @@ class WebcamStream extends React.Component {
     this.mediaRecorder.stop();
 	}
 
-	downloadVideo(){
-		downloadVideo(this);	
-	}
-  downloadAll(){
-    downloadAll(this);
-  }
   
   captureScreenshot(){
     captureScreenshot(this);
     }
-
-  downloadScreenshots(){
-    downloadScreenshots(this);
-  }
-  
   mirror(way){
     mirror(this,way);
   }
@@ -177,10 +118,6 @@ class WebcamStream extends React.Component {
   }
   organizeScreen(){
     organizeScreen(this);
-  }
-  resetSocketVars(){
-    this.socketCnt = 0;
-    //this.framesArray = [];
   }
   render() {
     const isVideoLoading = this.props.currentState.isVideoLoading;
@@ -296,23 +233,7 @@ class WebcamStream extends React.Component {
     );
   }
 }
-function urlToPromise(url) {
-    return new Promise(function(resolve, reject) {
-      JSZipUtils.getBinaryContent(url, function (err, data) {
-        if(err) {
-          reject(err);
-        }
-        else {
-          resolve(data);
-        }
-      });
-    });
-  }
 
-function sendto(content,el){
-	el.props.sendViaSocket(content);
-	//FileSaver.saveAs(content, "download.zip");
-}
 function gotDevices(deviceInfos) {
   const videoSelect = document.getElementById("videoSelectConf");
   const selectors = [videoSelect];

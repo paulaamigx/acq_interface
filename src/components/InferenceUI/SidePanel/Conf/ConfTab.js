@@ -108,7 +108,24 @@ export function ConfigTab(props){
             </td>
           </tr>
   
-          <tr style={{height: "20%"}}> 
+          <tr style={{height: "5%"}}/>
+
+          <tr style={{height: "0.2vw"}} className='c_division'>
+            <td colSpan="13"/> 
+          </tr>
+
+          <tr style={{height: "5%"}}/>
+
+          <tr>
+            <td colSpan="13">
+              <input type='checkbox' id='c_leftEar' onClick={()=>{document.getElementById('c_rightEar').checked = false}}/>
+              <span> Oído izquierdo </span>
+              <input type='checkbox' id='c_rightEar'onClick={()=>{document.getElementById('c_leftEar').checked = false}}/>
+              <span> Oído derecho </span>
+              <div id='earUncheckedWarning'> Debe seleccionar un oido. </div>
+            </td>
+          </tr>
+          <tr style={{height: "10%"}}> 
           </tr>
         </tbody>
       </table>

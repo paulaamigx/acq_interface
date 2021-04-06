@@ -57,20 +57,21 @@
   line-height: 3vw;
 
 }
-#confTab{
-  width: 2.5vw;
+#symptomsTab{
+  width: 10.5vw;
 }
-#galleryTab{
-  left: 2.45vw;
-  width: 16vw;
+#confTab{
+  left: 10.5vw;
+  width: 10.5vw;
 }
 #resultsTab{
-  left: 18.4vw;
-  width: 11.65vw;
+  left: 21vw;
+  width: 10.5vw;
+  line-height: 1.5vw;
 }
-#reportTab{
-  left: 30vw;
-  width: 12vw;
+#diagnosisTab{
+  left: 31.5vw;
+  width: 10.5vw;
 }
 .tabBody{
   position: absolute;

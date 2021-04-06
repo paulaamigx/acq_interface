@@ -1,0 +1,134 @@
+form{
+  font-size: 0.9vw;
+} 
+
+/**** PACIENT ****/
+#p_leftDiv{
+  position: absolute;
+  top: 2vw;
+  width: 20vw;
+}
+#p_rightDiv{
+  position: absolute;
+  top: 2vw;
+  width: 20vw;
+  left: 20vw;
+  display: inline-block;
+}
+#rutInput{
+  width: 7vw;
+  height: 1.5vw;
+}
+#birthDateInput{
+  position: absolute;
+  left: 29vw;
+  top: 1.7vw;
+  width: 9vw;
+  height: 1.5vw;
+  padding: 0vw;
+  overflow: hidden;
+}
+.p_input{
+  margin-left: 1vw;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+/***** BG & SY ****/
+.title{
+  font-weight: bold;
+  font-size: 1.1vw;
+}
+  .CB{
+  width: 0.8vw;
+  height: 0.8vw;
+  margin-left:0.4vw;
+}
+.bg_yesNo, .sy_yesNo{
+  margin-top: 0.7vw;
+  margin-bottom: 0.7vw;
+}
+
+/******* BACKGROUND  ******/
+#backgroundDiv{
+  position: absolute;
+  top: 6vw;
+  left: 2.7vw;
+}
+.bg_fieldLabel{
+  width: 20vw;
+  margin-right: 2vw;
+  display: inline-block;
+}
+#whichSurgLabel{
+  margin-left: 3vw;
+}
+#whichSurg{
+  height: 1.5vw;
+  width: 12vw;
+}
+#whichSurgDiv{
+  color: gray;
+  pointer-events: none;
+}
+#leftEar, #rightEar{
+  margin-left:1.9vw;
+}
+
+/********* SYMPTOMS ******/
+#symptomsDiv{
+  position: absolute;
+  top: 24.5vw;
+  left: 2.7vw;
+}
+.symptomsLevel{
+  font-size: 0.8vw;
+  margin-left: 1vw;
+  width: 5vw;
+  height: 1.5vw;
+  padding: 0vw;
+  pointer-events: none;
+  color: gray;
+}
+.sy_fieldLabel{
+  width: 5vw;
+  display: inline-block;
+}
+#symptomsRightDiv{
+  position: absolute;
+  width: 20vw;
+  left: 20vw;
+  top: 1.8vw;
+}
+#symptomsLeftDiv{
+  position: absolute;
+  width: 20vw;
+  top: 1.8vw;
+}
+/*****BOTTOM**********/
+#infoReady{
+  background-color: #2495e0;
+  color: white;
+  width: 6vw;
+  text-align: center;
+  height: 1.8vw;
+  position: absolute;
+  top: 34vw;
+  left: 18vw;
+}
+#incompleteFormWarning{
+  color: red;
+  position: absolute;
+  top: 36vw;
+  width: 36vw;
+  text-align: center;
+  display:none;
+  
+}

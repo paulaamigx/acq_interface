@@ -48,13 +48,13 @@ export function clickOnImage(number){
     let name = 'img'.concat(i);
     if (i !== number){
       document.getElementById(name).style.borderStyle = 'none';
-      document.getElementById(name).style.top = '1.8vw';
+      document.getElementById(name).style.top = '4.8vw';
       document.getElementById(name).style.width = '10vw';
       document.getElementById(name).style.left = 5 + (i-1)*11 + 'vw';
     }
     else{
       document.getElementById(name).style.border= '0.5vw solid #021a40';
-      document.getElementById(name).style.top = '1.3vw';
+      document.getElementById(name).style.top = '4.3vw';
       document.getElementById(name).style.width = '11vw';
       document.getElementById(name).style.left = 5 + (i-1)*11 - 0.5 + 'vw';
        

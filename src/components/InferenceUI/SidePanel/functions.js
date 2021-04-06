@@ -149,21 +149,6 @@ export async function galleryPrev(galleryIndxSh, gallerySrc, newPhoto, selectedP
       img1.style.left= '3.4vw';
       img2.style.left= '14.4vw';
       img3.style.objectPosition= '0vw';
-      /*
-      img1.style.objectPosition=  '14vw';
-      pos1 = 14;
-      intv = setInterval(frame2, 2)
-      async function frame2(){
-        if(pos1 >  0){
-          pos1 --;
-          img1.style.objectPosition= pos1 + 'vw';
-        }
-        else{
-          clearInterval(intv);
-
-        }
-      }
-      */
 			removeAllImgBorders();
 		  if(galleryIndxSh.includes(selectedPhoto)){
 		  	for (let i=0; i <= 2; i++){
@@ -180,7 +165,7 @@ export function removeAllImgBorders(){
 	for (let i=1; i <= 3; i++){
     let name = 'img'.concat(i);
     document.getElementById(name).style.borderStyle = 'none';
-    document.getElementById(name).style.top = '1.8vw';
+    document.getElementById(name).style.top = '4.8vw';
     document.getElementById(name).style.width = '10vw';
     document.getElementById(name).style.left = 5 + (i-1)*11 + 'vw';
   }
@@ -190,7 +175,7 @@ function setOneImgBorder(i){
   console.log('uu');
 	let name = 'img'.concat(i);
 	document.getElementById(name).style.border= '0.5vw solid #021a40';
-	document.getElementById(name).style.top = '1.3vw';
+	document.getElementById(name).style.top = '4.3vw';
  	document.getElementById(name).style.width = '11vw';
  	document.getElementById(name).style.left = 5 + (i-1)*11 - 0.5 + 'vw';
 

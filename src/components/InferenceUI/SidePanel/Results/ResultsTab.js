@@ -1,6 +1,5 @@
 import React from 'react'
 
-import logoDownload from './download.png' 
 import logoTrash from './trash.png'
 
 import {deletePhoto, clickOnImage} from './functions.js'
@@ -23,35 +22,6 @@ export function ResultsTab(props){
                      [galleryIndxSh[1], galleryIndxSh[2], 
                       mapKeys[mapKeys.indexOf(galleryIndxSh[2])+1]],
                     [0,1,2], false,'next')}} />
-      <div id='downloadBG'>
-        <div id = 'downloadAll' className= 'download button'
-              onClick={()=>{
-                if(props.currentStateName.localeCompare('Review') === 0 && props.gallerySrc.size>0)
-                  props.downloadHandler("all")}}>
-              <img src={logoDownload} alt='' className='downloadLogo'/>
-              <div className='downloadTag'>
-              Descargar fotos y video
-              </div>
-        </div>
-        <div id = 'downloadPhotos' className= 'download button'
-              onClick={()=>{
-                if(props.currentStateName.localeCompare('Review') === 0 && props.gallerySrc.size > 0)
-                  props.downloadHandler("screenshots")}}>
-              <img src={logoDownload} alt='' className='downloadLogo'/>
-              <div className='downloadTag'>
-              Descargar fotos 
-              </div>
-        </div>
-        <div id = 'downloadVideo' className= 'download button'
-              onClick={()=>{
-                if(props.currentStateName.localeCompare('Review') === 0)
-                  props.downloadHandler("video")}}>
-              <img src={logoDownload} alt='' className='downloadLogo'/>
-              <div className='downloadTag'>
-              Descargar video
-              </div>
-        </div>
-      </div>
       {!isEmpty &&
       <div >
         <div id='deletePhoto' className='button'>
@@ -59,11 +29,6 @@ export function ResultsTab(props){
                onClick={()=>deletePhoto(props.gallerySrc, props.selectedGalleryPhoto, props.galleryIndxSh,props.setGalleryIndxShowing, props.setSelectedGalleryPhoto)}
           />
         </div>
-        {/*
-        <div id='keepPhoto' className='button'>
-          <img src={logoTick} alt='' id='logoCtrlPhoto'/>
-        </div>*/
-        }
       </div>
       }
 
@@ -87,11 +52,6 @@ export function ResultsTab(props){
                           props.setSelectedGalleryPhoto(galleryIndxSh[2]);
             }}/>
       <img id='displayedImg' src={props.gallerySrc.get(props.selectedPhoto)} alt=''/>
-      {/*
-			<div id='errorBtn' className='button' onClick={()=>document.getElementById('modalBtn').click()}>
-				<img id='iconError' src={iconError} alt=''/>
-			</div>*/
-      }
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import ConfigTab from './Conf/ConfTab.js'
 import DiagnosisTab from './Diagnosis/DiagnosisTab.js'
 import ResultsTab from './Results/ResultsTab.js'
-import ReportTab from './Report/ReportTab.js'
+import SymptomsTab from './Symptoms/SymptomsTab.js'
 
 import './SidePanelWrapper.css'
 import { Button } from 'reactstrap';
@@ -10,39 +10,19 @@ import {listDevices, setGallery2, galleryPrev, galleryNext, hideSidePanel, showS
 import {getSysDetails} from './getNavDetais.js'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import frame138 from './Diagnosis/MaterialDiagnostico/frame138.png'
-import frame302 from './Diagnosis/MaterialDiagnostico/frame302.png'
-import frame1282 from './Diagnosis/MaterialDiagnostico/frame1282.png'
 import iconShowPanel from './showPanel.png'
-import "jspdf/dist/polyfills.es.js";
 
 class SidePanel extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-      showDiagnosisImg: false,
-      diagnosisImgOnModal: 0,
-      //should be initialized empty. Diagnosis and frames sent by server should be stored here in this format. Max 6 for report
-      diagnosisImgs: [[frame138,'Diagnostico 1'],
-                      [frame302,'Diagnostico 2'],
-                      [frame1282,'Diagnostico 3'],
-                      [frame302,'Diagnostico 4'],
-                      [frame138,'Diagnostico 5']],
-      //index of first image on left side diagnosis
-      diagnosisIndex: 0
-
 		}
-    this.pdfSrc=null;
 
-    this.setShowDiagnosisImg= this.setShowDiagnosisImg.bind(this);
-    this.reportReady= this.reportReady.bind(this);
-    this.setDiagnosisIndex= this.setDiagnosisIndex.bind(this);
+    this.infoReady= this.infoReady.bind(this);
+
   }
 
   
-  downloadHandler(media){
-    this.props.downloadHandler(media);
-  }
 
   listDevices(){
     listDevices();
@@ -52,14 +32,7 @@ class SidePanel extends React.Component{
   }
   componentDidMount(){
     listDevices();
-    document.getElementById("countdownFromInput").value="1";
     changeTab(1, this.props.setTabOn, this.props.currentState);
-  }
-  saveCanvasDim(w,h){
-    this.props.saveCanvasDim(w,h);
-  }
-  getCanvasDim(){
-    return this.props.getCanvasDim();
   }
   
   galleryCtrl(dir, galleryIndxSh, gallerySrc, newPhoto, selectedPhoto){
@@ -73,28 +46,68 @@ class SidePanel extends React.Component{
   hideSidePanel(){
     hideSidePanel(this);
   }
-  setDiagnosisImgOnModal(value){
-    this.setState({diagnosisImgOnModal: value});
-  }
-  setShowDiagnosisImg(value,indx){
-    this.setState({showDiagnosisImg: value},()=>{
-      if(value){
-        document.getElementById('d_modalImg').src = document.getElementById('diagnosisImg'+indx).src;
-        document.getElementById('d_modalImgTag').innerHTML = document.getElementById('d_ImgTag'+indx).innerHTML;
+  infoReady(){
+    //to test without requirements, comment line 62 (formIsFull=false) anda change line 70 from 'else if(-)' to if(-)
+    let checkboxes = document.getElementsByClassName('CB');
+    let formIsFull = true;
+    //check in pairs
+    for (let i=0; i< checkboxes.length; i+=2){
+      //either in the pair is checked
+      if(!(checkboxes[i].checked || checkboxes[i+1].checked)){
+        //if the one not checked doesnt need to be ecause disabled
+        if(!(checkboxes[i].id.localeCompare('leftEar') === 0 && document.getElementById('no_earSurgery').checked)){
+          formIsFull = false;
+        }
       }
-    });
-    this.setDiagnosisImgOnModal(indx);
-  }
-  setPdfSrc(pdf){
-    console.log('setpdf');
-    this.pdfSrc=pdf;
-  }
-  reportReady(){
-    this.props.setTabOn(4);
-  }
-  setDiagnosisIndex(indx){
-    if(this.state.diagnosisImgs.length >= indx+4 && indx >= 0 ){
-      this.setState({diagnosisIndex: indx});
+    }
+    if(!formIsFull ||
+        (document.getElementById('yes_earSurgery').checked && !document.getElementById('whichSurg').value) ||
+        !document.getElementById('birthDateInput').value ||
+        document.getElementById('rutInput').value.length !== 9){
+      document.getElementById('incompleteFormWarning').style.display = 'block';
+     
+    }
+		else if(formIsFull){
+			let data = new Array(26);
+			let date = new Date();
+      let month = date.getMonth() +1;
+      data[0] = date.getFullYear() + '-' + month + '-' +date.getDate();
+      data[1] = document.getElementById('caseNumber').innerHTML;
+      data[2] = '';
+      data[3] = document.getElementById('rutInput').value;
+      data[4] = document.getElementById('birthDateInput').value;
+      data[5] = (document.getElementById('sexoF').checked)? 'femenino': (document.getElementById('sexoM').checked)? 'masculino': 'none';
+			let index = 6;
+			let checkboxes = document.getElementsByClassName('CB');
+			for(let i=2; i<28; i +=2){
+				if(checkboxes[i].checked){
+					data[index] = 'Si';
+				}
+				else{
+					data[index] = 'No';	
+				}
+				if(i === 4){
+					data[8] = (document.getElementById('whichSurg').value)? document.getElementById('whichSurg').value : 'N/A'; 
+					data[9] = (document.getElementById('leftEar').checked)? 'izquierdo' : 
+	  								(document.getElementById('rightEar').checked)? 'derecho' : 'N/A';
+					index= 10;
+				}
+				else if(i > 13 ){
+					index += 2;
+				}
+				else{
+					index++;
+				}
+			}
+			let levels = document.getElementsByClassName('symptomsLevel');
+			index = 15;
+			for(let i = 0; i < 6; i++){
+				data[index] = (data[index-1].localeCompare('No') === 0)? 'N/A': levels[i].value;
+				index+=2;
+			}
+			this.props.setAcqInfo(data);
+      this.props.setTabOn(2);
+      listDevices();
     }
   }
   render(){
@@ -105,34 +118,18 @@ class SidePanel extends React.Component{
             <Tabs tabOn={this.props.currentState.tabOn}
                  	currentState={this.props.currentState}
                   setTabOn={this.props.setTabOn}
-                  
             />
 				    <TabsBody
-                 		downloadHandler={(media)=> this.downloadHandler(media)}
+										superElement={this}
                  		currentState={this.props.currentState}
                     gallerySrc={this.props.gallerySrc}
                     setGalleryIndxShowing={this.props.setGalleryIndxShowing}
                     setSelectedGalleryPhoto={this.props.setSelectedGalleryPhoto}
                     selectedGalleryPhoto = {this.props.currentState.selectedGalleryPhoto}
-										superElement={this}
-                    showDiagnosisImg = {this.state.showDiagnosisImg}
-                    setShowDiagnosisImg = {this.setShowDiagnosisImg}
-                    pdfSrc={this.pdfSrc}
-                    setPdfSrc={(pdf)=>this.setPdfSrc(pdf)}
-                    diagnosisImgOnModal={this.state.diagnosisImgOnModal}
-                    setDiagnosisImgOnModal={(value)=>this.setDiagnosisImgOnModal(value)}
-                    diagnosisImgs={this.state.diagnosisImgs}
-                    diagnosisIndex={this.state.diagnosisIndex}
-                    setDiagnosisIndex={this.setDiagnosisIndex}
-                    reportReady ={this.reportReady}
+                    infoReady={this.infoReady}
+                    setAcqInfo = {this.props.setAcqInfo} 
             />
 						<ModalError className=''/>
-
-            {/*!this.props.currentState.isVideoLoading  &&  this.props.currentState.renderCanvas &&
-              <div id="hideSidePanel"  onClick={()=>this.hideSidePanel()}>
-                <img id='iconHidePanel' src={iconHidePanel} alt=''/>
-              </div>}
-              */}
 					</div>}
 
         {this.props.currentState.hideSidePanel && 
@@ -144,44 +141,36 @@ class SidePanel extends React.Component{
 		);
 	}
 }
-
+//function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms));}
 function TabsBody(props) {
   if(props.currentState.tabOn === 1){
+    return(
+      <SymptomsTab  infoReady={props.infoReady}
+                    />
+    );
+  }
+  else if(props.currentState.tabOn === 2){
     return(
 			<ConfigTab superElement={props.superElement} className='tabBody'/>
     );
   }
-  else if(props.currentState.tabOn === 2){
+  else if(props.currentState.tabOn === 3){
     return(
       <ResultsTab gallerySrc={props.gallerySrc} 
                   galleryIndxSh={props.currentState.GalleryIndexShowing}
                   setGalleryIndxShowing={props.setGalleryIndxShowing}
                   setSelectedGalleryPhoto={props.setSelectedGalleryPhoto}
                   selectedPhoto = {props.currentState.selectedGalleryPhoto}
-                  downloadHandler = {props.downloadHandler}
                   selectedGalleryPhoto = {props.selectedGalleryPhoto}
                   currentStateName= {props.currentState.stateName}
                   />
     );
   }
-  else if(props.currentState.tabOn === 3){
-    return(
-      <DiagnosisTab superElement={props.superElement} 
-                    showDiagnosisImg = {props.showDiagnosisImg}
-                    setShowDiagnosisImg = {props.setShowDiagnosisImg}
-                    setPdfSrc = {props.setPdfSrc}
-                    diagnosisImgOnModal={props.diagnosisImgOnModal}
-                    setDiagnosisImgOnModal={props.setDiagnosisImgOnModal}
-                    diagnosisImgs = {props.diagnosisImgs}
-                    diagnosisIndex = {props.diagnosisIndex}
-                    setDiagnosisIndex = {props.setDiagnosisIndex}
-                    reportReady = {props.reportReady}
-      />
-    );
-  }
   else if(props.currentState.tabOn === 4){
     return(
-      <ReportTab className='tabBody' pdfSrc={props.pdfSrc} setPdfSrc={props.setPdfSrc}/>
+      <DiagnosisTab superElement={props.superElement} 
+                    setAcqInfo = {props.setAcqInfo} 
+      />
     );
   }
   else{
@@ -195,21 +184,21 @@ function TabsBody(props) {
 function Tabs(props){
   return(
     <div id='tabs'>
-      <div id='confTab' className='tab' 
+      <div id='symptomsTab' className='tab'
            onClick={()=>changeTab(1, props.setTabOn, props.currentState)}>
-        <i className="fas fa-cog"></i>
+          Síntomas
       </div>
-      <div id='galleryTab' className='tab'
+      <div id='confTab' className='tab' 
            onClick={()=>changeTab(2, props.setTabOn, props.currentState)}>
-        Resultados de  Examinación  
+          Configuraciones
       </div>
       <div id='resultsTab' className='tab'
            onClick={()=>changeTab(3, props.setTabOn, props.currentState)}>
-        Diagnóstico
+        Resultados de  Examinación  
       </div>
-      <div id='reportTab' className='tab'
+      <div id='diagnosisTab' className='tab'
            onClick={()=>changeTab(4, props.setTabOn, props.currentState)}>
-        Informe Médico
+        Diagnóstico
       </div>
     </div>
   );

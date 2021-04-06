@@ -4,19 +4,6 @@ import WebcamStream from './WebcamStream/WebcamStream.js'
 import SidePanel from './SidePanel/SidePanel.js'
 import {manageStates} from './functions.js'
 
-//import socketIOClient from "socket.io-client";
-//import React, { useEffect, useState } from "react";
-//import FileSaver from 'file-saver';
-const ENDPOINT = "wss://aisgs0wem3.execute-api.sa-east-1.amazonaws.com/Dev";
-const WebSocket = require('isomorphic-ws');
-
-const zipName = 'p';
-//tambien se debe configurar en WebcamStream.js
-const packetsSentLimit = 10;
-
-const alertWaitFor = 2000;  //miliseconds to wait for alerts
-const alertsLimit = 3;     //how many alerts in alertWaiFor necessary to show the alert on screen
-const alertTTL = 4000;      //miliseconds to keep alert on screen
 
 class InferenceUI extends React.Component {
   
@@ -27,15 +14,7 @@ class InferenceUI extends React.Component {
 
       // Render canvas or video
       renderCanvas: true,
-      // Canvas Message
-      canvasMessage: "",
-      canvasAlert: false,
 
-      // Progress Bar props
-      showProgressBar: false,
-      progress: 0,
-      // Show Spinner
-      showSpinner: false,
       // Button state
       textCtrlBtn: "Empezar",
       enableCtrlBtn: true,
@@ -54,36 +33,22 @@ class InferenceUI extends React.Component {
 
       isDiagnosisReady: false,
       
-      blurAlert: false,
-      domAlert: false
   	
     }
     this.gallerySrc = new Map();
     this.childWebcamStream = React.createRef();
     this.childDiagnosis = React.createRef();
     this.countdownFrom = 5;
-    this.alertTimeout = null;
-    this.videoThumbnail = null;
     this.canvasPreview = React.createRef();
 
-    this.socketCon = null;
-    this.pdfSrc = null;
-		this.presignedURL = [];
-    this.indexURL = 0;
-
-    this.blurCnt = 0;
-    this.blurTimeoutAlertOn= null;
-    this.blurTimeoutAlertOff= null;
-
-    this.domCnt = 0;
-    this.domTimeoutAlertOn= null;
-    this.domTimeoutAlertOff= null;
+    this.acqInfo = []; 
+    this.setAcqInfo = this.setAcqInfo.bind(this);
   }
   // En caso de que venga de review y vaya a idle, limpiar las variables.
   async stateHandler(nextState){
     await this.setState({stateName: nextState});
     console.log("Estado: " + this.state.stateName);
-    if(nextState.localeCompare('Idle') === 0){
+    if(nextState.localeCompare('Idle') === 0 && this.state.tabOn === 2){
       this.setState(manageStates(nextState), async()=>{
 		  	this.childDiagnosis.current.listDevices();
         var selectObj = document.getElementById("videoSelectConf");
@@ -105,33 +70,13 @@ class InferenceUI extends React.Component {
       }
     }
     if(!this.state.hideSidePanel){
-      let tabs = document.getElementsByClassName('tab');
-      for(let i = 0; i <4; i++){
-        if(!this.state.tabsEnabled[i])
-          tabs[i].style.color = 'grey';
-        else{
-          if(i !== this.state.tabOn-1)
-            tabs[i].style.color = 'white';
-          else
-            tabs[i].style.color = 'var(--main)';
-        }
-      }
+      setTabsColor(this.state.tabsEnabled, this.state.tabOn);
     }
+      
 
   
   }
   
-  downloadHandler(media){
-    if(media.localeCompare("video")===0){
-      this.childWebcamStream.current.downloadVideo();
-    }
-    else if(media.localeCompare("screenshots")===0){
-      this.childWebcamStream.current.downloadScreenshots();
-    }
-    else if(media.localeCompare("all")===0){
-      this.childWebcamStream.current.downloadAll();
-    }
-  }
 
   async setGalleryIndxShowing(newIndxShowing, indx, newPhoto, dir){
     let auxArr =[];
@@ -182,29 +127,16 @@ class InferenceUI extends React.Component {
   	  tabs[value-1].style.borderBottom = 'none';
       this.setState({tabOn: value},()=>{
         if(value === 2){
+          this.setState({tabsEnabled: [0,1,0,0]},()=>{
+            document.getElementById("countdownFromInput").value="1";
+            setTabsColor(this.state.tabsEnabled, this.state.tabOn);
+          });
+        }
+        else if(value === 3){
           document.getElementById('img1').src = this.gallerySrc.get((this.state.GalleryIndexShowing[0]));
           document.getElementById('img2').src = this.gallerySrc.get((this.state.GalleryIndexShowing[1]));
           document.getElementById('img3').src = this.gallerySrc.get((this.state.GalleryIndexShowing[2]));
           if(this.state.stateName.localeCompare('Review') === 0){
-            //enable all download buttons
-            if(this.gallerySrc.size>0){
-              for(let i=0; i <3; i++){
-                document.getElementsByClassName('download')[i].style.color = "white";
-                document.getElementsByClassName('downloadLogo')[i].style.filter = "invert(1)";
-              }
-            }
-            //enable only video download
-            else{
-              document.getElementsByClassName('download')[2].style.color = "white";
-              document.getElementsByClassName('downloadLogo')[2].style.filter = "invert(1)";
-            }
-          }
-          //disable all downloads in any other state
-          else{
-            for(let i=0; i <3; i++){
-              document.getElementsByClassName('download')[i].style.color = "rgba(0,0,0,0.3)";
-              document.getElementsByClassName('downloadLogo')[i].style.filter = "opacity(0.3)";
-            }
           }
         }
       });
@@ -241,30 +173,25 @@ class InferenceUI extends React.Component {
     this.childWebcamStream.current.organizeScreen(this.childWebcamStream.current);
   }
 
-  setPdfSrc(pdf){
-    this.pdfSrc = pdf;
+
+  async setAcqInfo(value){
+    this.acqInfo = this.acqInfo.concat(value);
+    if(this.acqInfo.length === 31){
+      this.generateSheet(this.acqInfo);
+      this.stateHandler('Idle');
+      this.setTabOn(1);
+    }
   }
-  setBlurAlertOn(){
-    this.setState({blurAlert: true});
-    let el = this;
-    this.blurTimeoutAlertOff = setTimeout(function(){
-      el.setBlurAlertOff();
-      }, alertTTL);
-  }
-  setBlurAlertOff(){
-    this.setState({blurAlert: false});
-    this.blurTimeoutAlertOff= null;
-  }
-  setDomAlertOn(){
-    this.setState({domAlert: true});
-    let el = this;
-    this.domTimeoutAlertOff = setTimeout(function(){
-      el.setDomAlertOff();
-      }, alertTTL);
-  }
-  setDomAlertOff(){
-    this.setState({domAlert: false});
-    this.domTimeoutAlertOff= null;
+  generateSheet(data){
+    /*not uploaded anywhere yet. 
+    Data is array 0f 31 elements. 
+    First 27 are in the same order as Database.xls
+    28: which ears is being examinated
+    29: diagnosis normal or anormal
+    30: which condition is selected in anormal
+    31: obs in diagnosis tab
+    */
+    console.log(data);
   }
   componentDidMount(){
     this.childDiagnosis.current.listDevices();
@@ -295,17 +222,12 @@ class InferenceUI extends React.Component {
                        setGallery={()=>this.setGallery()}
                        setGalleryIndxShowing={(newIndxShowing, indx, newPhoto,dir)=>this.setGalleryIndxShowing(newIndxShowing,indx, newPhoto, dir)}
                        hideSidePanel={()=>this.childDiagnosis.current.hideSidePanel()}
-                       sendViaSocket={(content)=>sendFile(content,this.socketConi,this.presignedURL,this)}
-                       getCon={()=>getCon(this)}
-                       closeCon={()=>closeCon(this)}
-                       pdfSrc={this.pdfSrc}
-                       setPdfSrc={()=>this.setPdfSrc()}
+                       setAcqInfo = {this.setAcqInfo}    
                       
 				 />
          <SidePanel    currentState={this.state}
                        setStreamFromConfig={()=>{this.childWebcamStream.current.setStream();}}
                        ref={this.childDiagnosis}
-                       downloadHandler={(media)=>this.downloadHandler(media)}
                        setTabOn={(value)=>this.setTabOn(value)}
                        setHideSidePanel={(value)=>this.setHideSidePanel(value)}
                        mirror={(way)=>{this.childWebcamStream.current.mirror(way)}}
@@ -314,132 +236,26 @@ class InferenceUI extends React.Component {
                        setGalleryIndxShowing={(newIndxShowing, indx, newPhoto,dir)=>this.setGalleryIndxShowing(newIndxShowing,indx, newPhoto, dir)}
                        gallerySrc = {this.gallerySrc}
                        setSelectedGalleryPhoto = {(id) => this.setSelectedGalleryPhoto(id)}
-                      
+                       setAcqInfo = {this.setAcqInfo}    
                        
          />
-        <button onClick={()=>blurAlert(this)} style={{position: 'absolute', top: '50vw', left: '5vw'}}>B</button>
-        <button onClick={()=>domAlert(this)} style={{position: 'absolute', top: '50vw', left: '10vw'}}>D</button>
-    
-
       </div>
-	
       );
-        
     }
 }
 
-function closeCon(el){
-  console.log('Disconnecting...');
-  //el.socketCon.close();
-  el.childWebcamStream.current.resetSocketVars();
-}
-
-function getCon(el){
-  console.log('Connecting...');
-  el.socketCon = new WebSocket(ENDPOINT);
-
-  el.socketCon.onopen = function open() {
-      console.log('connected');
-      let fileNames = '"p1.zip"';
-      for(let i=2; i <= packetsSentLimit; i++){
-        fileNames+= ',"'+zipName+i+'.zip"';
-      }
-			let msg = '{"action":"getURL", "fileName":[' + fileNames + ']}';
-			el.socketCon.send(msg);
-  };
-	el.socketCon.onclose = function close() {
-	  console.log('disconnected');
-	};
-	
-	el.socketCon.onmessage = function incoming(data) {
-    console.log(JSON.parse(data.data));
-    let dataJSON = JSON.parse(data.data); 
-
-    if(dataJSON.response){
-      console.log('Set presigned URLs');
-		  el.presignedURL = dataJSON.response;
-    }
-    if(dataJSON.alert){
-      //may not work to check
-      //check format
-      if(dataJSON.alert[0].localeCompare('blur') === 0){
-        console.log('Blur');
-        blurAlert(el);
-      }
-      if(dataJSON.alert[0].localeCompare('dom') === 0){
-        console.log('Dom');
-        domAlert();
-          
-      }
-    }
-		//el.socketCon.close();
-	};
-}
-function sendFile(file,socketCon, presignedURL,el){
-  console.log('Sending...');
-	var xhr = new XMLHttpRequest();
-  xhr.open('PUT', presignedURL[el.indexURL], true);
-	xhr.onload = () => {
-    if (xhr.status === 200) {
-      console.log('Uploaded data successfully');
-    }
-  };
-  xhr.onerror = () => {
-    console.log('Nope')
-  };
-  xhr.send(file);  
-  el.indexURL++;
-}
 //function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
-function blurAlert(el){
-  console.log('blur');
-  el.blurCnt++;
-  if(el.blurTimeoutAlertOn === null){
-    el.blurTimeoutAlertOn = setTimeout(function(){ 
-      if(el.blurCnt > alertsLimit){
-        //not currently showing alert
-        if(el.blurTimeoutAlertOff === null){
-          el.setBlurAlertOn(); 
-        }
-        else{
-          clearTimeout(el.blurTimeoutAlertOff);
-          el.blurTimeoutAlertOff = setTimeout(function(){
-            el.setBlurAlertOff()
-          }, alertTTL);
-        }
-      }
-      else{
-        el.blurTimeoutAlertOff = null;
-      }
-      el.blurCnt = 0;
-      el.blurTimeoutAlertOn = null;
-    }, alertWaitFor); 
-  }
-}
-
-function domAlert(el){
-  console.log('dom');
-  el.domCnt++;
-  if(el.domTimeoutAlertOn === null){
-    el.domTimeoutAlertOn = setTimeout(function(){ 
-      if(el.domCnt > alertsLimit){
-        //not currently showing alert
-        if(el.domTimeoutAlertOff === null){
-          el.setDomAlertOn(); 
-        }
-        else{
-          clearTimeout(el.domTimeoutAlertOff);
-          el.domTimeoutAlertOff = setTimeout(function(){
-            el.setDomAlertOff()
-          }, alertTTL);
-        }
-      }
-      else{
-        el.domTimeoutAlertOff = null;
-      }
-      el.domCnt = 0;
-      el.domTimeoutAlertOn = null;
-    }, alertWaitFor); 
+function setTabsColor(tabsEnabled, tabOn){
+  let tabs = document.getElementsByClassName('tab');
+  for(let i = 0; i <4; i++){
+    if(!tabsEnabled[i])
+      tabs[i].style.color = 'grey';
+    else{
+      if(i !== tabOn-1)
+        tabs[i].style.color = 'white';
+      else
+        tabs[i].style.color = 'var(--main)';
+    }
   }
 }
 export default InferenceUI;

@@ -74,8 +74,6 @@ export function manageStates(state){
                 renderCanvas: true,
                 // Canvas Message
                 canvasMessage: "Seleccione un dispositivo de imagen en el panel de configuración.",
-                // Progress Bar props
-                showProgressBar: false,
                 // Show Spinner
                 showSpinner: false,
                 // Button state
@@ -83,12 +81,6 @@ export function manageStates(state){
                 enableCtrlBtn: true,
                 enableCaptureBtn: false,
                 // Side Panel
-                /*
-                enableReportTab: false,
-                enableDiagnosisTab: false,
-                enableConfigTab: true,
-                enableGalleryTab: false,
-*/
                 tabsEnabled: [1,0,0,0],
   							GallerySrc: [],
   
@@ -105,21 +97,11 @@ export function manageStates(state){
                 renderCanvas: true,
                 // Canvas Message
                 canvasMessage: "Estableciendo conexión.",
-                // Progress Bar props
-                showProgressBar: false,
-                // Show Spinner
-                showSpinner: false,
                 // Button state
                 textCtrlBtn: "Cancelar",
                 enableCtrlBtn: false,
                 enableCaptureBtn: false,
                 // Side Panel
-                /*
-                enableReportTab: false,
-                enableDiagnosisTab: false,
-                enableConfigTab: true,
-                enableGalleryTab: false
-*/
                 tabsEnabled: [0,0,0,0],
             };
             break;
@@ -129,21 +111,11 @@ export function manageStates(state){
                 renderCanvas: true,
                 // Canvas Message
                 canvasMessage: "",
-                // Progress Bar props
-                showProgressBar: true,
-                // Show Spinner
-                showSpinner: false,
                 // Button state
                 textCtrlBtn: "Cancelar",
                 enableCtrlBtn: true,
                 enableCaptureBtn: false,
                 // Side Panel
-                /*
-                enableReportTab: false,
-                enableDiagnosisTab: false,
-                enableConfigTab: false,
-                enableGalleryTab: false
-*/
                 tabsEnabled: [0,0,0,0],
             };
             break;
@@ -153,22 +125,12 @@ export function manageStates(state){
                 renderCanvas: true,
                 // Canvas Message
                 canvasMessage: "",
-                // Progress Bar props
-                showProgressBar: true,
-                // Show Spinner
-                showSpinner: false,
                 // Button state
                 textCtrlBtn: "Finalizar",
                 enableCtrlBtn: true,
                 enableCaptureBtn: true,
                 // Side Panel
-                /*
-                enableReportTab: false,
-                enableDiagnosisTab: false,
-                enableConfigTab: false,
-                enableGalleryTab: true
-*/
-                tabsEnabled: [0,1,0,0],
+                tabsEnabled: [0,0,1,0],
             };
             break;
         case 'Review':
@@ -177,22 +139,12 @@ export function manageStates(state){
                 renderCanvas: false,
                 // Canvas Message
                 canvasMessage: "",
-                // Progress Bar props
-                showProgressBar: false,
-                // Show Spinner
-                showSpinner: false,
                 // Button state
                 textCtrlBtn: "Nueva Examinación",
                 enableCtrlBtn: true,
                 enableCaptureBtn: true,
                 // Side Panel
-                /*
-                enableReportTab: true,
-                enableDiagnosisTab: true,
-                enableConfigTab: false,
-                enableGalleryTab: true
-*/
-                tabsEnabled: [0,1,1,1],
+                tabsEnabled: [0,0,1,1],
             };
             break;
         default:

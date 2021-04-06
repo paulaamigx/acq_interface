@@ -1,12 +1,3 @@
-import JSZipUtils from 'jszip-utils';
-import JSZip from 'jszip';
-import FileSaver from 'file-saver';
-
-var req = new XMLHttpRequest();
-req.open('GET', 'video.mp4', true);
-req.responseType = 'blob';
-
-
 export var handleDataAvailable = function(el) {
   return function (event) {
     if (event.data && event.data.size > 0) {
@@ -30,38 +21,22 @@ async function setVideoRec(el){
   videoElement.src = el.videoRecorded;
 }
 
-  export function setProgressBarColor(ctxt){
-    let p =parseInt(ctxt.props.currentState.progress,10);
-    if (p < 80){
-      ctxt.progressBarColor = "info";
-    }
-    else if (p < 100){
-      ctxt.progressBarColor = "success";
-    }
-    else{
-      ctxt.progressBarColor = "danger";
-    }
-    return ctxt.progressBarColor;
-  }
-  
-  export async function ctrlBtnFunction(el){
+export async function ctrlBtnFunction(el){
     switch(el.props.currentState.stateName){
       case 'Idle':
-        el.props.stateHandler('GetCon');
-        // Dummy, despues vendra del servidor.
-        el.timeout = setTimeout(function(){el.props.stateHandler('Countdown');el.timeStartPressed = Date.now();}, 1000);
-		    el.props.setTabOn(2);
-        setCountdownFrom(el);
-        // Enviar al servidor la solicitud de conexión.
-        el.props.getCon();
-        break;
-      case 'GetCon':
-				clearTimeout(el.timeout);
-        el.props.stateHandler('Idle');
-        el.props.closeCon();				
+        if(!document.getElementById('c_rightEar').checked && !document.getElementById('c_leftEar').checked){
+          document.getElementById('earUncheckedWarning').style.display = 'block';
+        }
+        else{
+          let data = (document.getElementById('c_leftEar').checked)? 'izquierdo': 'derecho';
+          el.props.setAcqInfo(data);
+          el.props.stateHandler('Countdown');
+          el.timeStartPressed = Date.now();
+          el.props.setTabOn(3);
+          setCountdownFrom(el);
+          }
         break;
 			case 'Countdown':
-				clearTimeout(el.timeout);
         el.props.stateHandler('Idle');
 		    el.props.setTabOn(1);
 				break
@@ -75,9 +50,8 @@ async function setVideoRec(el){
         }
         await sleep(200);
         el.props.stateHandler('Review')
-        el.props.setTabOn(3);
+        el.props.setTabOn(4);
         //el.videoSrc = document.getElementById("videoSelectConf").value;
-        el.timeout2 = setTimeout(function(){el.props.setIsDiagnosisReady(true)}, 1000);
         // Enviar al servidor la solicitud de diagnóstico.
         let stream = el.videoTag.current.srcObject;
         let tracks = stream.getTracks();
@@ -152,61 +126,7 @@ async function setVideoRec(el){
       }
   }
   
-function urlToPromise(url) {
-    return new Promise(function(resolve, reject) {
-      JSZipUtils.getBinaryContent(url, function (err, data) {
-        if(err) {
-          reject(err);
-        }
-        else {
-          resolve(data);
-        }
-      });
-    });
-  }
 
-  export function downloadScreenshots(el){
-    let zip = new JSZip();
-    /*
-    for(let i=0;i < el.props.gallerySrc.length; i++){
-      let name = "Screenshot_" + i + ".jpeg";
-      zip.file(name,urlToPromise(el.props.gallerySrc[i].src),{binary:true});
-    }
-    */
-    el.props.gallerySrc.forEach((values,keys)=>{
-      let name = "Screenshot_" + keys + ".jpeg";
-      zip.file(name,urlToPromise(values),{binary:true});
-      }
-
-    );
-    zip.generateAsync({type: "blob"}).then(function(content) {
-      FileSaver.saveAs(content, "download.zip");
-    });
-  }
-
-  export function downloadVideo(el){
-    var aux = document.createElement("a");
-    document.body.appendChild(aux);
-    aux.style = "display: none";
-    aux.href = el.videoRecorded;
-    console.log(el.videoRecorded);
-    aux.download = "test.webm";
-    document.body.appendChild(aux);
-    aux.click();		
-  }
-
-  export function downloadAll(el){
-    let zip = new JSZip();
-    el.props.gallerySrc.forEach((values,keys)=>{
-      let name = "Screenshot_" + keys + ".jpeg";
-      zip.file(name,urlToPromise(values),{binary:true});
-      });
-
-    zip.file("test.webm", el.videoRecorded, {binary: true});
-    zip.generateAsync({type: "blob"}).then(function(content) {
-      FileSaver.saveAs(content, "download.zip");
-    });
-  }
 
   export function captureScreenshot(el){
     var canvas = el.props.canvasPreview.current; 
@@ -258,6 +178,7 @@ export function fullScreen(el){
 }
 
 export async function organizeScreen(el){
+  console.log('os');
   let div = document.getElementById("canvasDiv");
   let canvas = document.getElementById("canvasPreview");
   let btns= document.getElementById("buttons");
@@ -266,12 +187,19 @@ export async function organizeScreen(el){
   if(div){
     /********** organize full screen ************/
     if (document.fullscreenElement) {
+      console.log('os2');
 	  	el.props.setFullScreen(true);
       if(!el.props.currentState.hideSidePanel && !el.props.currentState.stateName.localeCompare('Idle')){
         el.props.setCountdownFrom(parseInt(document.getElementById("countdownFromInput").value));
       }
-	  	canvas.style.height = window.screen.height + "px";
-	  	canvas.style.width = window.screen.height*el.canvasWidth/el.canvasHeight + "px";
+      const width  = window.innerWidth || document.documentElement.clientWidth || 
+      document.body.clientWidth;
+      const height = window.innerHeight|| document.documentElement.clientHeight|| 
+      document.body.clientHeight;
+
+      console.log(width, height);
+	  	canvas.style.height = height + "px";
+	  	canvas.style.width = height*el.canvasWidth/el.canvasHeight + "px";
 	  	canvas.style.marginLeft = "12%";
 
       if(canvasCountdown){
@@ -280,7 +208,7 @@ export async function organizeScreen(el){
 	  	div.appendChild(btns);
 	  	btns.style.width = getComputedStyle(canvas).width;
       btns.style.marginLeft = "12%"
-	  	btns.style.top = window.screen.height - btns.clientHeight  + "px";
+	  	btns.style.top = height - btns.clientHeight  + "px";
       if(!el.props.currentState.hideSidePanel){
 	  	  canvas.addEventListener("mouseover",showButtons, false);
 	  	  btns.addEventListener("mouseover",showButtons, false);
@@ -340,6 +268,6 @@ function hideButtons(){
 	btns.style.opacity=0;
 }
 
-  export default {handleDataAvailable, setProgressBarColor, ctrlBtnFunction, countdown,
-                 downloadScreenshots, downloadVideo, captureScreenshot, mirror, fullScreen, organizeScreen}
+  export default {handleDataAvailable, ctrlBtnFunction, countdown,
+                 captureScreenshot, mirror, fullScreen, organizeScreen}
 
